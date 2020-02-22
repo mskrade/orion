@@ -5,6 +5,7 @@ import axios from 'axios'
 
 function App() {
     const [cards, setCards] = useState([]);
+    const [displayCards, setDisplayCards] = useState([]);
     useEffect(() => {
         axios
             .get(
@@ -12,42 +13,40 @@ function App() {
             )
             .then(({ data }) => {
                 setCards(data.data);
+                setDisplayCards(data.data);
             });
-
     }, []);
 
-    const filterCards = () => {
-       setCards([]);
+    const filterCards = searchValue => {
+       setDisplayCards(cards.filter(card => card.name.toUpperCase().indexOf(searchValue) !== -1));
     }
 
     return (
       <div>
-          <Filter onSubmit={filterCards}/>
-          <CardList cardList={cards}/>
+          <Filter onChange={filterCards}/>
+          <CardList cardList={displayCards}/>
       </div>
     );
 }
 
 function Filter(props) {
-    const [search, setSearch] = useState({searchValue: ""});
-    const handleSearch = event => {
-        event.preventDefault();
-        console.log(search.searchValue);
-        props.onSubmit();
+    const [search, setSearch] = useState("");
+    const handleSearch = (event, searchValue) => {
+        setSearch(searchValue);
+        props.onChange(searchValue.toUpperCase());
     }
     return (
-        <form onSubmit={handleSearch}>
+        <form>
             <input
                 type="text"
-                value={search.searchValue}
-                onChange={event => setSearch({searchValue: event.target.value})}
-                placeholder="card name"/>
-            <button>Search</button>
+                value={search}
+                onChange={event => handleSearch(event, event.target.value)}
+                placeholder="Card name..."/>
         </form>
     )
 }
 
-const CardList = (props) => {
+function CardList(props) {
     return (
       <div>
           {props.cardList.map(cardInfo => <Card {...cardInfo} />)}
