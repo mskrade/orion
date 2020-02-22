@@ -1,33 +1,38 @@
-import React, {useState} from 'react';
+import React from 'react';
+import ReactDOM from 'react-dom'
 import logo from './logo.svg';
 import './App.css';
 
+const testData = [
+    {cardName: "Serra Angel", flavorText: "Angel"},
+    {cardName: "Counterspell", flavorText: "Nope"},
+    {cardName: "Duress", flavorText: "Discard"},
+    {cardName: "Lightning Bolt", flavorText: "Boom"},
+    {cardName: "Giant Growth", flavorText: "Big"}
+];
+
 function App() {
-  const [cardInfo, setCardInfo] = useState({name: "", flavorText: ""});
-  const showCardInfo = (e) => {
-      setCardInfo(
-      {
-                ...cardInfo,
-              [e.target.name]: e.target.value
-            }
-        );
-  };
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <Button />
-        <Card cardName="serra angel" flavorText="sample text"/>
+        <CardList />
       </header>
     </div>
   );
 }
 
-function Button() {
-    return (
-        <button onClick={loadCard}>TEST</button>
-    )
-}
+const CardList = (props) => {
+  return (
+      <div>
+          <Card {...testData[0]} />
+          <Card {...testData[1]} />
+          <Card {...testData[2]} />
+          <Card {...testData[3]} />
+          <Card {...testData[4]} />
+      </div>
+  )
+};
 
 function Card(props) {
     return (
@@ -35,10 +40,9 @@ function Card(props) {
     )
 }
 
-const loadCard = async () => {
-    const resp = await fetch("http://localhost:8080/cardlist");
-    const data = await resp.json();
-    console.log(data.data[0]);
-}
+ReactDOM.render(
+    <App/>,
+    document.getElementById('root'),
+);
 
 export default App;
