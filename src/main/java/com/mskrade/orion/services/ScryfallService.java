@@ -13,6 +13,6 @@ public class ScryfallService {
     private RestTemplate restTemplate;
 
     public CardList getCardlist () {
-        return restTemplate.getForObject("https://api.scryfall.com/cards/search?q=!\"serra angel\"", CardList.class);
+        return restTemplate.getForObject("https://api.scryfall.com/cards/search?q=e:war+cmc>5", CardList.class);
     }
 }

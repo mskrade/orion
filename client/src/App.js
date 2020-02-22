@@ -1,42 +1,70 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import ReactDOM from 'react-dom'
-import logo from './logo.svg';
 import './App.css';
-
-const testData = [
-    {cardName: "Serra Angel", flavorText: "Angel"},
-    {cardName: "Counterspell", flavorText: "Nope"},
-    {cardName: "Duress", flavorText: "Discard"},
-    {cardName: "Lightning Bolt", flavorText: "Boom"},
-    {cardName: "Giant Growth", flavorText: "Big"}
-];
+import axios from 'axios'
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <CardList />
-      </header>
-    </div>
-  );
+    const [cards, setCards] = useState([]);
+    useEffect(() => {
+        axios
+            .get(
+                "http://localhost:8080/cardlist"
+            )
+            .then(({ data }) => {
+                setCards(data.data);
+            });
+
+    }, []);
+
+    const filterCards = () => {
+       setCards([]);
+    }
+
+    return (
+      <div>
+          <Filter onSubmit={filterCards}/>
+          <CardList cardList={cards}/>
+      </div>
+    );
+}
+
+function Filter(props) {
+    const [search, setSearch] = useState({searchValue: ""});
+    const handleSearch = event => {
+        event.preventDefault();
+        console.log(search.searchValue);
+        props.onSubmit();
+    }
+    return (
+        <form onSubmit={handleSearch}>
+            <input
+                type="text"
+                value={search.searchValue}
+                onChange={event => setSearch({searchValue: event.target.value})}
+                placeholder="card name"/>
+            <button>Search</button>
+        </form>
+    )
 }
 
 const CardList = (props) => {
-  return (
+    return (
       <div>
-          <Card {...testData[0]} />
-          <Card {...testData[1]} />
-          <Card {...testData[2]} />
-          <Card {...testData[3]} />
-          <Card {...testData[4]} />
+          {props.cardList.map(cardInfo => <Card {...cardInfo} />)}
       </div>
-  )
+    )
 };
 
 function Card(props) {
     return (
-        <div>{props.cardName} --------- {props.flavorText}</div>
+        <div>
+            ****************<br/>
+            {props.name}<br/>
+            {props.mana_cost}<br/>
+            {props.oracle_text}<br/>
+            {props.flavor_text}<br/>
+            ****************<br/>
+        </div>
     )
 }
 

@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
+@CrossOrigin(origins = "http://localhost:3000")
 public class CardListController {
 
     @Autowired
     ScryfallService scryfallService;
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/cardlist")
     @ResponseBody
     public CardList getCardlist(@RequestParam(name="name", required=false, defaultValue="World") String name, Model model) {
