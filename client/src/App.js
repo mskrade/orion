@@ -7,6 +7,7 @@ function App() {
     const [cards, setCards] = useState([]);
     const [displayCards, setDisplayCards] = useState([]);
     const [currentSet, setCurrentSet] = useState("lea");
+    const [searchValue, setSearchValue] = useState("");
 
     useEffect(() => {
         axios.get(`http://localhost:8080/cardlist/${currentSet}`)
@@ -16,18 +17,20 @@ function App() {
             });
     }, [currentSet]);
 
-    const filterCards = searchValue => {
-       setDisplayCards(cards.filter(card => card.name.toUpperCase().indexOf(searchValue) !== -1));
+    const filterCards = filterValue => {
+        setSearchValue(filterValue);
+       setDisplayCards(cards.filter(card => card.name.toUpperCase().indexOf(filterValue.toUpperCase()) !== -1));
     }
 
     const changeSet = newSet => {
         setCurrentSet(newSet);
+        setSearchValue("");
     }
 
     return (
       <div>
           <SetSelector currentSet={currentSet} onChange={changeSet}/>
-          <Filter onChange={filterCards} />
+          <Filter searchValue={searchValue} onChange={filterCards} />
           <CardList cardList={displayCards} />
       </div>
     );
@@ -51,16 +54,14 @@ function SetSelector(props) {
 }
 
 function Filter(props) {
-    const [search, setSearch] = useState("");
     const handleSearch = (event, searchValue) => {
-        setSearch(searchValue);
-        props.onChange(searchValue.toUpperCase());
+        props.onChange(searchValue);
     }
     return (
         <form>
             <input
                 type="text"
-                value={search}
+                value={props.searchValue}
                 onChange={event => handleSearch(event, event.target.value)}
                 placeholder="Card name..."/>
         </form>
@@ -77,7 +78,7 @@ function CardList(props) {
 
 function Card(props) {
 
-    function getFlavorText() {
+    const getFlavorText = () => {
         if (props.flavorText) {
             return <div>{`'${props.flavorText}'`}<br/></div>
         } else {
@@ -85,7 +86,7 @@ function Card(props) {
         }
     }
 
-    function getStats() {
+    const getStats = () => {
         if (props.typeLine.includes("Creature")) {
             return <div>{props.power}/{props.toughness}<br/></div>
         } else if(props.typeLine.includes("Planeswalker")) {
