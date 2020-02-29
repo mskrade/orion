@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import ReactDOM from 'react-dom'
+import Loading from './Loading.js'
 import './App.css';
 import axios from 'axios'
 
@@ -8,12 +9,14 @@ function App() {
     const [displayCards, setDisplayCards] = useState([]);
     const [currentSet, setCurrentSet] = useState("lea");
     const [searchValue, setSearchValue] = useState("");
+    const [doneLoading, setDoneLoading] = useState(false);
 
     useEffect(() => {
         axios.get(`http://localhost:8080/cardlist/${currentSet}`)
             .then(({ data }) => {
                 setCards(data.data);
                 setDisplayCards(data.data);
+                setDoneLoading(true);
             });
     }, [currentSet]);
 
@@ -23,15 +26,18 @@ function App() {
     }
 
     const changeSet = newSet => {
-        setCurrentSet(newSet);
+        setDoneLoading(false);
         setSearchValue("");
+        setDisplayCards([]);
+        setCurrentSet(newSet);
     }
 
     return (
       <div>
+          <Loading doneLoading={doneLoading}/>
           <SetSelector currentSet={currentSet} onChange={changeSet}/>
-          <Filter searchValue={searchValue} onChange={filterCards} />
-          <CardList cardList={displayCards} />
+          <Filter searchValue={searchValue} onChange={filterCards}/>
+          <CardList cardList={displayCards}/>
       </div>
     );
 }
@@ -98,14 +104,14 @@ function Card(props) {
 
     return (
         <div>
-            ****************<br/>
+            <strong>****************</strong><br/>
             {props.name}<br/>
             {props.typeLine}<br/>
             {props.manaCost}<br/>
             {props.oracleText}<br/>
             {getFlavorText(props.flavorText)}
             {getStats(props.typeLine)}
-            ****************<br/>
+            <strong>****************</strong><br/>
         </div>
     )
 }
