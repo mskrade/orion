@@ -6,27 +6,48 @@ import axios from 'axios'
 function App() {
     const [cards, setCards] = useState([]);
     const [displayCards, setDisplayCards] = useState([]);
+    const [currentSet, setCurrentSet] = useState("lea");
+
     useEffect(() => {
-        axios
-            .get(
-                "http://localhost:8080/cardlist"
-            )
+        axios.get(`http://localhost:8080/cardlist/${currentSet}`)
             .then(({ data }) => {
                 setCards(data.data);
                 setDisplayCards(data.data);
             });
-    }, []);
+    }, [currentSet]);
 
     const filterCards = searchValue => {
        setDisplayCards(cards.filter(card => card.name.toUpperCase().indexOf(searchValue) !== -1));
     }
 
+    const changeSet = newSet => {
+        setCurrentSet(newSet);
+    }
+
     return (
       <div>
-          <Filter onChange={filterCards}/>
-          <CardList cardList={displayCards}/>
+          <SetSelector currentSet={currentSet} onChange={changeSet}/>
+          <Filter onChange={filterCards} />
+          <CardList cardList={displayCards} />
       </div>
     );
+}
+
+function SetSelector(props) {
+    const [sets, setSets] = useState([]);
+
+    useEffect(() => {
+        axios.get(`http://localhost:8080/setlist`)
+            .then(({data}) => {
+                setSets(data);
+            });
+    });
+
+    return (
+        <select value={props.currentSet} onChange={event => props.onChange(event.target.value)}>
+            {sets.map(set => <option key={set.name} value={set.code}>{set.name}</option>)}
+        </select>
+    )
 }
 
 function Filter(props) {
@@ -49,19 +70,40 @@ function Filter(props) {
 function CardList(props) {
     return (
       <div>
-          {props.cardList.map(cardInfo => <Card {...cardInfo} />)}
+          {props.cardList.map(cardInfo => <Card key={cardInfo.name} {...cardInfo} />)}
       </div>
     )
 };
 
 function Card(props) {
+
+    function getFlavorText() {
+        if (props.flavorText) {
+            return <div>{`'${props.flavorText}'`}<br/></div>
+        } else {
+            return null;
+        }
+    }
+
+    function getStats() {
+        if (props.typeLine.includes("Creature")) {
+            return <div>{props.power}/{props.toughness}<br/></div>
+        } else if(props.typeLine.includes("Planeswalker")) {
+            return <div>{props.loyalty}<br/></div>
+        } else {
+            return null;
+        }
+    }
+
     return (
         <div>
             ****************<br/>
             {props.name}<br/>
-            {props.mana_cost}<br/>
-            {props.oracle_text}<br/>
-            {props.flavor_text}<br/>
+            {props.typeLine}<br/>
+            {props.manaCost}<br/>
+            {props.oracleText}<br/>
+            {getFlavorText(props.flavorText)}
+            {getStats(props.typeLine)}
             ****************<br/>
         </div>
     )
