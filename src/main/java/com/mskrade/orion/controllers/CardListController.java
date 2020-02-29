@@ -1,5 +1,6 @@
 package com.mskrade.orion.controllers;
 
+import com.mskrade.orion.models.Card;
 import com.mskrade.orion.models.CardList;
 import com.mskrade.orion.models.Set;
 import com.mskrade.orion.services.ScryfallService;
@@ -19,7 +20,7 @@ public class CardListController {
 
     @GetMapping("/cardlist/{set}")
     @ResponseBody
-    public CardList getCardList(@PathVariable  String set) {
+    public List<Card> getCardList(@PathVariable  String set) {
         return scryfallService.getCardList(set);
     }
 

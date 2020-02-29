@@ -1,5 +1,6 @@
 package com.mskrade.orion.services;
 
+import com.mskrade.orion.models.Card;
 import com.mskrade.orion.models.CardList;
 import com.mskrade.orion.models.ScryfallSetList;
 import com.mskrade.orion.models.Set;
@@ -18,8 +19,9 @@ public class ScryfallService {
     @Autowired
     private RestTemplate restTemplate;
 
-    public CardList getCardList(String set) {
-        return restTemplate.getForObject("https://api.scryfall.com/cards/search?q=e:" + set, CardList.class);
+    public List<Card> getCardList(String set) {
+        CardList initialList = restTemplate.getForObject("https://api.scryfall.com/cards/search?q=e:" + set, CardList.class);
+        return initialList.getData();
     }
 
     public List<Set> getSetList() {

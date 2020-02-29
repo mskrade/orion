@@ -14,8 +14,8 @@ function App() {
     useEffect(() => {
         axios.get(`http://localhost:8080/cardlist/${currentSet}`)
             .then(({ data }) => {
-                setCards(data.data);
-                setDisplayCards(data.data);
+                setCards(data);
+                setDisplayCards(data);
                 setDoneLoading(true);
             });
     }, [currentSet]);
