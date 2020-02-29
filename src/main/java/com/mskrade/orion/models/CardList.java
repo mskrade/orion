@@ -1,4 +1,4 @@
-package com.mskrade.orion.model;
+package com.mskrade.orion.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
