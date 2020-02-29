@@ -19,8 +19,8 @@ public class CardListController {
 
     @GetMapping("/cardlist/{set}")
     @ResponseBody
-    public CardList getCardlist(@PathVariable  String set) {
-        return scryfallService.getCardlist(set);
+    public CardList getCardList(@PathVariable  String set) {
+        return scryfallService.getCardList(set);
     }
 
     @GetMapping("/setlist")

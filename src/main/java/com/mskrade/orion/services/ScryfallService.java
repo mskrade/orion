@@ -18,13 +18,13 @@ public class ScryfallService {
     @Autowired
     private RestTemplate restTemplate;
 
-    public CardList getCardlist(String set) {
+    public CardList getCardList(String set) {
         return restTemplate.getForObject("https://api.scryfall.com/cards/search?q=e:" + set, CardList.class);
     }
 
     public List<Set> getSetList() {
         ScryfallSetList scryfallSetList = restTemplate.getForObject("https://api.scryfall.com/sets", ScryfallSetList.class);
-        List<Set> clientSetList = scryfallSetList.getData().stream()
+        return scryfallSetList.getData().stream()
                 .filter(set ->
                         "core".equalsIgnoreCase(set.getSetType())
                         || "expansion".equalsIgnoreCase(set.getSetType())
@@ -32,6 +32,5 @@ public class ScryfallService {
                 )
                 .sorted((Comparator.comparing(Set::getReleaseDate)))
                 .collect(Collectors.toList());
-        return clientSetList;
     }
 }
