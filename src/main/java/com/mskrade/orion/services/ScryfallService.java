@@ -28,9 +28,31 @@ public class ScryfallService {
             return cardCache.get(set);
         } else {
             CardList initialList = restTemplate.getForObject("https://api.scryfall.com/cards/search?q=e:" + set, CardList.class);
-            cardCache.put(set, initialList.getData());
-            return initialList.getData();
+            List<CardList> pages = getAllPages(initialList, set);
+            List<Card> fullSet = combinePages(pages);
+            cardCache.put(set, fullSet);
+            return fullSet;
         }
+    }
+
+    private List<CardList> getAllPages(CardList cardList, String set) {
+        List<CardList> pages = new LinkedList<>();
+        pages.add(cardList);
+        int nextPage = 2;
+        while (cardList.getHasMore()) {
+            cardList = restTemplate.getForObject("https://api.scryfall.com/cards/search?q=e:" + set + "&page=" + nextPage, CardList.class);
+            pages.add(cardList);
+            nextPage++;
+        }
+        return pages;
+    }
+
+    private List<Card> combinePages(List<CardList> pages) {
+        List<Card> fullSet = new LinkedList<>();
+        for (CardList page: pages) {
+            fullSet.addAll(page.getData());
+        }
+        return fullSet;
     }
 
     public List<Set> getSetList() {
