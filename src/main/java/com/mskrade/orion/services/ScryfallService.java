@@ -23,11 +23,14 @@ public class ScryfallService {
     @Autowired
     private HashMap<String, List<Card>> cardCache;
 
+    private static final String BASE_CARD_URL = "https://api.scryfall.com/cards/search?q=e:";
+    private static final String SET_URL = "https://api.scryfall.com/sets";
+
     public List<Card> getCardList(String set) {
         if (cardCache.containsKey(set)) {
             return cardCache.get(set);
         } else {
-            CardList initialList = restTemplate.getForObject("https://api.scryfall.com/cards/search?q=e:" + set, CardList.class);
+            CardList initialList = restTemplate.getForObject(BASE_CARD_URL + set, CardList.class);
             List<CardList> pages = getAllPages(initialList, set);
             List<Card> fullSet = combinePages(pages);
             cardCache.put(set, fullSet);
@@ -40,7 +43,7 @@ public class ScryfallService {
         pages.add(cardList);
         int nextPage = 2;
         while (cardList.getHasMore()) {
-            cardList = restTemplate.getForObject("https://api.scryfall.com/cards/search?q=e:" + set + "&page=" + nextPage, CardList.class);
+            cardList = restTemplate.getForObject(BASE_CARD_URL + set + "&page=" + nextPage, CardList.class);
             pages.add(cardList);
             nextPage++;
         }
@@ -56,7 +59,7 @@ public class ScryfallService {
     }
 
     public List<Set> getSetList() {
-        ScryfallSetList scryfallSetList = restTemplate.getForObject("https://api.scryfall.com/sets", ScryfallSetList.class);
+        ScryfallSetList scryfallSetList = restTemplate.getForObject(SET_URL, ScryfallSetList.class);
         return scryfallSetList.getData().stream()
                 .filter(set ->
                         "core".equalsIgnoreCase(set.getSetType())
