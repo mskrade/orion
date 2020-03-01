@@ -27,11 +27,11 @@ function Loading(props) {
 function LoadingBar(props) {
     return (
         <div>
-            <img src={require("./W.svg")} alt="W" width="50" height="50"/>
-            {props.progress > 0 && <img src={require("./U.svg")} alt="U" width="50" height="50"/>}
-            {props.progress > 1 && <img src={require("./B.svg")} alt="B" width="50" height="50"/>}
-            {props.progress > 2 && <img src={require("./R.svg")} alt="R" width="50" height="50"/>}
-            {props.progress > 3 && <img src={require("./G.svg")} alt="G" width="50" height="50"/>}
+            <img src={require("./resources/W.svg")} alt="W" width="50" height="50"/>
+            {props.progress > 0 && <img src={require("./resources/U.svg")} alt="U" width="50" height="50"/>}
+            {props.progress > 1 && <img src={require("./resources/B.svg")} alt="B" width="50" height="50"/>}
+            {props.progress > 2 && <img src={require("./resources/R.svg")} alt="R" width="50" height="50"/>}
+            {props.progress > 3 && <img src={require("./resources/G.svg")} alt="G" width="50" height="50"/>}
         </div>
     )
 }
