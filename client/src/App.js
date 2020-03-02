@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import ReactDOM from 'react-dom'
 import Loading from './Loading.js'
-import SetSelector from "./SetSelector";
-import Filter from "./Filter";
-import CardList from "./Cards";
+import SetSelector from './SetSelector';
+import Filter from './Filter';
+import CardList from './Cards';
+import './App.css'
 import axios from 'axios'
 
 function App() {
@@ -35,12 +36,14 @@ function App() {
     }
 
     return (
-      <div>
-          <Loading doneLoading={doneLoading}/>
-          <SetSelector currentSet={currentSet} onChange={changeSet}/>
-          <Filter searchValue={searchValue} onChange={filterCards}/>
+      <React.Fragment>
+          <div className="center">
+              <Loading doneLoading={doneLoading}/>
+              <SetSelector currentSet={currentSet} onChange={changeSet}/>
+              <Filter searchValue={searchValue} onChange={filterCards}/>
+          </div>
           <CardList cardList={displayCards}/>
-      </div>
+      </React.Fragment>
     );
 }
 

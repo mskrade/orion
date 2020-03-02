@@ -5,7 +5,7 @@ function Loading(props) {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setLoadingBarProgress((loadingBarProgress + 1) % 6);
+            setLoadingBarProgress((loadingBarProgress + 1) % 5);
         }, 500);
         return () => clearInterval(interval);
     }, [loadingBarProgress]);
@@ -19,7 +19,7 @@ function Loading(props) {
         )
     } else {
         return (
-            <LoadingBar progress={5}/>
+            <LoadingBar progress={4}/>
         )
     }
 }
